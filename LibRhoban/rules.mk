@@ -7,7 +7,7 @@ BUILDDIRS       += $(BUILD_PATH)/$(d)
 # Safe includes for Wirish.
 WIRISH_INCLUDES := -I$(LIB_MAPLE_HOME)/wirish/include -I$(LIB_MAPLE_HOME)/wirish/$(WIRISH_BOARD_PATH)/include
 
-# LibRobotCampus includes
+# LibRhoban
 LIBROBOT_INCLUDES := -I$(LIB_ROBOT_HOME)
 
 # Local flags

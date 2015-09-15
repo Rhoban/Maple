@@ -4,7 +4,7 @@
 
 ## Local configuration
 LIB_MAPLE_HOME = ../LibMaple
-LIB_ROBOT_HOME = ../LibRobotCampus
+LIB_ROBOT_HOME = ../LibRhoban
 PATH := $(PATH):$(CURDIR)/../BinutilsArm/bin
 
 ##
@@ -37,7 +37,7 @@ BOARD_INCLUDE_DIR := $(MAKEDIR)/board-includes
 BOARD ?= maple_mini
 MEMORY_TARGET ?= flash
 
-BOOTLOADER ?= maple
+BOOTLOADER ?= robotis
 BOOTLOADER_PORT ?= /dev/ttyACM0
 
 # $(BOARD)- and $(MEMORY_TARGET)-specific configuration
@@ -63,7 +63,7 @@ TARGET_FLAGS    += -I$(LIBMAPLE_PATH)/include/libmaple \
                    -I$(WIRISH_PATH)/include/wirish \
                    -I$(LIB_ROBOT_HOME)/
 TARGET_FLAGS += -I$(LIBRARIES_PATH) # for internal lib. includes, e.g. <Wire/WireBase.h>
-GLOBAL_CFLAGS   := -Os -g3 -gdwarf-2 -nostdlib \
+GLOBAL_CFLAGS   := -g3 -gdwarf-2 -nostdlib -Os \
                    -ffunction-sections -fdata-sections \
 		   -Wl,--gc-sections $(TARGET_FLAGS) \
 		   -DBOOTLOADER_$(BOOTLOADER)
@@ -84,9 +84,9 @@ LIBMAPLE_MODULES += $(LIBMAPLE_MODULE_SERIES) # STM32 series submodule in libmap
 LIBMAPLE_MODULES += $(SRCROOT)/wirish
 
 # Official libraries:
-LIBMAPLE_MODULES += $(SRCROOT)/libraries/Servo
-LIBMAPLE_MODULES += $(SRCROOT)/libraries/LiquidCrystal
-LIBMAPLE_MODULES += $(SRCROOT)/libraries/Wire
+#LIBMAPLE_MODULES += $(SRCROOT)/libraries/Servo
+#LIBMAPLE_MODULES += $(SRCROOT)/libraries/LiquidCrystal
+#LIBMAPLE_MODULES += $(SRCROOT)/libraries/Wire
 # Experimental libraries:
 # LIBMAPLE_MODULES += $(SRCROOT)/libraries/FreeRTOS
 
@@ -144,7 +144,7 @@ endif
 sketch: build-check MSG_INFO $(BUILD_PATH)/$(BOARD).bin
 
 clean:
-	rm -rf build LibMaple LibRobotCampus
+	rm -rf build LibMaple LibRhoban
 
 mrproper: clean
 	rm -rf doxygen

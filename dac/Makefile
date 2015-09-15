@@ -4,7 +4,7 @@
 
 ## Local configuration
 LIB_MAPLE_HOME = ../LibMaple
-LIB_ROBOT_HOME = ../LibRobotCampus
+LIB_ROBOT_HOME = ../LibRhoban
 LIB_SDFAT = SdFat
 PATH := $(PATH):$(CURDIR)/../BinutilsArm/bin
 
@@ -147,7 +147,7 @@ endif
 sketch: build-check MSG_INFO $(BUILD_PATH)/$(BOARD).bin
 
 clean:
-	rm -rf build LibMaple LibRobotCampus
+	rm -rf build LibMaple LibRhoban
 
 mrproper: clean
 	rm -rf doxygen

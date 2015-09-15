@@ -4,7 +4,7 @@
 
 ## Local configuration
 LIB_MAPLE_HOME = ../LibMaple
-LIB_ROBOT_HOME = ../LibRobotCampus
+LIB_ROBOT_HOME = ../LibRhoban
 PATH := $(PATH):$(CURDIR)/../BinutilsArm/bin
 
 ##
@@ -37,7 +37,7 @@ BOARD_INCLUDE_DIR := $(MAKEDIR)/board-includes
 BOARD ?= maple_mini
 MEMORY_TARGET ?= flash
 
-BOOTLOADER ?= maple
+BOOTLOADER ?= robotis
 BOOTLOADER_PORT ?= /dev/ttyACM0
 
 # $(BOARD)- and $(MEMORY_TARGET)-specific configuration
@@ -144,7 +144,7 @@ endif
 sketch: build-check MSG_INFO $(BUILD_PATH)/$(BOARD).bin
 
 clean:
-	rm -rf build LibMaple LibRobotCampus
+	rm -rf build LibMaple LibRhoban
 
 mrproper: clean
 	rm -rf doxygen
