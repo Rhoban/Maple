@@ -148,6 +148,9 @@ void dxl_packet_push_byte(struct dxl_packet *packet, ui8 b)
             break;
         case 3:
             packet->parameter_nb = b - 2;
+            if (b < 0 || b >= DXL_MAX_PARAMS) {
+                goto pc_error;
+            }
             break;
         case 4:
             packet->instruction = b;
@@ -241,6 +244,9 @@ void dxl_packet_push_byte(struct dxl_packet *packet, ui8 b)
             break;
         case 5:
             packet->parameter_nb = b;
+            if (b < 0 || b >= DXL_MAX_PARAMS) {
+                goto pc_error;
+            }
             break;
         case 6:
             packet->parameter_nb += (b<<8);
@@ -297,15 +303,18 @@ void dxl_init(int baudrate)
 #if defined(DXL_AVAILABLE)
     dxl_timeout = 10000000/baudrate;
     initialized = true;
+
+#if defined(DXL_REMAP)
     afio_remap(AFIO_REMAP_USART1);
 
     // Initializing pins
     gpio_set_mode(GPIOB, 6, GPIO_AF_OUTPUT_PP);
     gpio_set_mode(GPIOB, 7, GPIO_INPUT_FLOATING);
+#endif
 
     // Direction pins
     pinMode(DXL_DIRECTION, OUTPUT);
-    digitalWrite(DXL_DIRECTION, LOW);
+    digitalWrite(DXL_DIRECTION, DXL_DIRECTION_RX);
 
     DXL_DEVICE.begin(baudrate);
     dxl_disable_all();
@@ -322,12 +331,18 @@ void dxl_write_serial(ui8 *buffer, int n)
     }
 
     // Sending packet
-    digitalWrite(DXL_DIRECTION, HIGH); // TX
+    digitalWrite(DXL_DIRECTION, DXL_DIRECTION_TX); // TX
     asm("nop");
     DXL_DEVICE.write(buffer, n);
     DXL_DEVICE.waitDataToBeSent();
     asm("nop");
-    digitalWrite(DXL_DIRECTION, LOW); // RX
+    digitalWrite(DXL_DIRECTION, DXL_DIRECTION_RX); // RX
+    
+    // Flushing incoming data
+    while (DXL_DEVICE.available()) {
+        char dummy = DXL_DEVICE.read();
+        (void)dummy;
+    }
 #endif
 }
 
@@ -594,12 +609,20 @@ void dxl_enable(ui8 id, int torque)
 
 int dxl_position_to_value(ui8 id, float position)
 {
+#ifdef DXL_MX28
+    return ((position/360.0)*4096)+2048;
+#else
     return ((position/300.0)*1024)+512;
+#endif
 }
 
 float dxl_value_to_position(ui8 id, int value)
 {
+#ifdef DXL_MX28
+    return ((value-2048)/4096.0)*360.0;
+#else
     return ((value-512)/1024.0)*300.0;
+#endif
 }
 
 float dxl_get_position(ui8 id, bool *success)
@@ -644,7 +667,7 @@ bool dxl_read(ui8 id, ui8 addr, char *output, int size)
 ui8 dxl_read_byte(ui8 id, ui8 addr, bool *success)
 {
     bool dummy;
-    ui8 value;
+    ui8 value = 0;
     success = (success != NULL) ? success : &dummy;
     *success = dxl_read(id, addr, (char*)&value, 1);
     return value;
@@ -754,6 +777,16 @@ void dxl_compliance_margin(int margin)
         dxl_write_byte(id, DXL_COMPLIANCE_MARGIN_CCW, margin);
         delay(DXL_WRITE_DELAY);
     }
+}
+
+void dxl_pidp(int p)
+{
+#if defined(DXL_VERSION_2)
+    for (int id=1; id<DXL_MAX_ID; id++) {
+        dxl_write_byte(id, DXL_PIDP, p);
+        delay(DXL_WRITE_DELAY);
+    }
+#endif
 }
 
 void dxl_configure_all()

@@ -1,36 +1,36 @@
 #include <flash.h>
-#include <terminal.h>
 #include "flash_write.h"
 
 #define FLASH_KEY1     0x45670123
 #define FLASH_KEY2     0xCDEF89AB
 
-void flashUnlock()
+void flash_unlock()
 {
     FLASH_BASE->KEYR = FLASH_KEY1;
     FLASH_BASE->KEYR = FLASH_KEY2;
 }
 
-void flashLock()
+void flash_lock()
 {
     FLASH_BASE->CR = FLASH_CR_LOCK;
 }
 
-bool flashErasePage(unsigned int pageAddr)
+bool flash_erase_page(unsigned int pageAddr)
 {
-    FLASH_BASE->CR = FLASH_CR_PER;
-
+    FLASH_BASE->CR |= FLASH_CR_PER;
     while (FLASH_BASE->SR & FLASH_SR_BSY);
+
     FLASH_BASE->AR = pageAddr;
-    FLASH_BASE->CR = FLASH_CR_STRT | FLASH_CR_PER;
-    while (FLASH_BASE->SR & FLASH_SR_BSY);
 
-    FLASH_BASE->CR = 0;
+    FLASH_BASE->CR |= FLASH_CR_STRT;    
+
+    while (FLASH_BASE->SR & FLASH_SR_BSY);
+    FLASH_BASE->CR &= ~FLASH_CR_PER;
 
     return true;
 }
 
-bool flashWriteWord(unsigned int addr, unsigned int word)
+bool flash_write_word(unsigned int addr, unsigned int word)
 {
     volatile unsigned short *flashAddr = (volatile unsigned short*)addr;
     volatile unsigned int lhWord = (volatile unsigned int)word & 0x0000FFFF;
@@ -58,12 +58,12 @@ bool flashWriteWord(unsigned int addr, unsigned int word)
     return true;
 }
 
-void flashWrite(unsigned int addr, void *data, unsigned int size)
+void flash_write(unsigned int addr, void *data, unsigned int size)
 {
     unsigned int n, i;
     unsigned char *cdata = (unsigned char*)data;
-
-    flashUnlock();
+    
+    flash_unlock();
 
     // for each page 
     for (n=0; n<size; n+=0x400) {
@@ -75,16 +75,16 @@ void flashWrite(unsigned int addr, void *data, unsigned int size)
         if (pageBytes & 0x3) pageWords++;
         if (pageWords > 256) pageWords = 256;
 
-        flashErasePage(addr+n);
+        flash_erase_page(addr+n);
         for (i=0; i<pageWords; i++) {
-            flashWriteWord(addr+n+i*4, *(unsigned int*)&cdata[n+i*4]);
+            flash_write_word(addr+n+i*4, *(unsigned int*)&cdata[n+i*4]);
         }
     }
 
-    flashLock();
+    flash_lock();
 }
 
-void flashRead(unsigned int addr, void *data, unsigned int size)
+void flash_read(unsigned int addr, void *data, unsigned int size)
 {
     unsigned char *cdata = (unsigned char*)data;
     unsigned int i;

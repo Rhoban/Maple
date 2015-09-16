@@ -3,6 +3,8 @@
 #include <string.h>
 #include "terminal.h"
 
+static bool disabled = false;
+
 /**
  * Control bar structure
  */
@@ -185,11 +187,11 @@ const struct terminal_command *terminal_find_command(char *command_name, unsigne
  * Executes the given command with given parameters
  */
 bool terminal_execute(char *command_name, unsigned int command_name_length, 
-    unsigned int argc, char **argv)
+        unsigned int argc, char **argv)
 {
     unsigned int i;
     const struct terminal_command *command;
-    
+
     // Try to find and execute the command
     command = terminal_find_command(command_name, command_name_length);
     if (command != NULL) {
@@ -244,22 +246,22 @@ void terminal_process()
 
     unsigned int argc = 0;
     char* argv[TERMINAL_MAX_ARGUMENTS+1];
-    
+
     terminalIO.println();
 
     strtok_r(terminal_buffer, " ", &saveptr);
     while (
-        (argv[argc] = strtok_r(NULL, " ", &saveptr)) != NULL && 
-        argc < TERMINAL_MAX_ARGUMENTS
-    ) {
+            (argv[argc] = strtok_r(NULL, " ", &saveptr)) != NULL && 
+            argc < TERMINAL_MAX_ARGUMENTS
+          ) {
         *(argv[argc]-1) = '\0';
         argc++;
     }
-    
+
     if (saveptr != NULL) {
         *(saveptr - 1) = ' ';
     }
-    
+
     command_name_length = strlen(terminal_buffer);
 
     if (command_name_length > 0) {
@@ -286,13 +288,35 @@ void terminal_init(Serial *serial)
     terminal_bar.escape = true;
 }
 
+void terminal_reset()
+{
+    terminal_pos = 0;
+    terminal_last_pos = 0;
+    terminal_buffer[0] = '\0';
+    terminal_last_ok = false;
+    terminal_prompt();
+}
+
+/**
+ * Stops the terminal
+ */
+void terminal_disable()
+{
+    disabled = true;
+}
+
+void terminal_enable()
+{
+    disabled = false;
+}
+
 /**
  * Ticking the terminal, this will cause lookup for characters 
  * and eventually a call to the process function on new lines
  */
 void terminal_tick()
 {
-    if (!terminalIO.hasIO()) {
+    if (disabled || !terminalIO.hasIO()) {
         return;
     }
 
@@ -321,19 +345,19 @@ void terminal_tick()
             }
             terminal_buffer[terminal_pos] = '\0';
             terminal_process();
-        //Back key
+            //Back key
         } else if (c == '\x7f') {
             if (terminal_pos > 0) {
                 terminal_pos--;
                 terminalIO.print("\x8 \x8");
             }
-        //Special key
+            //Special key
         } else if (c == '\x1b') {
             while (!terminalIO.io->available());
             terminalIO.io->read();
             while (!terminalIO.io->available());
             terminalIO.io->read();
-        //Others
+            //Others
         } else {
             terminal_buffer[terminal_pos] = c;
             if (terminal_echo_mode) {
@@ -417,14 +441,14 @@ int terminal_bar_tick()
                 //Left
                 if (code[0] == '[' && code[1] == 'D') {
                     controlKey = -1;
-                //Right
+                    //Right
                 } else if (code[0] == '[' && code[1] == 'C') {
                     controlKey = 1;
                 }
-            //Alias keys for arrows left
+                //Alias keys for arrows left
             } else if (input == 'h') {
                 controlKey = -1;
-            //Alias keys for arrows right
+                //Alias keys for arrows right
             } else if (input == 'l') {
                 controlKey = 1;
             }
