@@ -88,6 +88,17 @@ class TerminalIO : public Print
 void terminal_init(Serial *serial);
 
 /**
+ * Resets the terminal
+ */
+void terminal_reset();
+
+/**
+ * Activate or desactivate the terminal
+ */
+void terminal_disable();
+void terminal_enable();
+
+/**
  * Terminal ticking
  * Call this function in your main loop 
  * to fetch serial port and handle terminal

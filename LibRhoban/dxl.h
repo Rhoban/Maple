@@ -19,17 +19,30 @@
 // Direction pin
 #if defined(BOARD_opencm904)
 #define DXL_DIRECTION  28
+#define DXL_DIRECTION_TX        HIGH
+#define DXL_DIRECTION_RX        LOW
 #define DXL_DEVICE     Serial1
 #define DXL_AVAILABLE
+#define DXL_REMAP
 #elif defined (BOARD_cm900)
 #define DXL_DIRECTION  19
+#define DXL_DIRECTION_TX        HIGH
+#define DXL_DIRECTION_RX        LOW
 #define DXL_DEVICE     Serial1
+#define DXL_AVAILABLE
+#define DXL_REMAP
+#elif defined (BOARD_maple_mini)
+#define DXL_DIRECTION  2
+#define DXL_DIRECTION_TX        LOW
+#define DXL_DIRECTION_RX        HIGH
+#define DXL_DEVICE     Serial3
 #define DXL_AVAILABLE
 #endif
 
 // Registers
 #ifdef DXL_VERSION_1
 #define DXL_ID              0x03
+#define DXL_BAUD            0x04
 #define DXL_RETURN_DELAY    0x05
 #define DXL_RETURN_LEVEL    0x10
 #define DXL_COMPLIANCE_MARGIN_CW 0x1A
@@ -50,12 +63,14 @@
 
 #ifdef DXL_VERSION_2
 #define DXL_ID              0x03
+#define DXL_BAUD            0x04
 #define DXL_RETURN_DELAY    0x05
 #define DXL_RETURN_LEVEL    0x11
 #define DXL_COMPLIANCE_MARGIN_CW 0x1A
 #define DXL_COMPLIANCE_MARGIN_CCW 0x1B
 #define DXL_COMPLIANCE_CW   0x1C
 #define DXL_COMPLIANCE_CCW  0x1D
+#define DXL_PIDP            29
 
 #define DXL_LED             0x19
 #define DXL_GOAL_POSITION   0x1E
@@ -173,6 +188,7 @@ struct dxl_config *dxl_get_config(ui8 id);
 int dxl_makeword(ui8 a, ui8 b);
 void dxl_compliance_slope(int slope);
 void dxl_compliance_margin(int margin);
+void dxl_pidp(int p);
 
 void dxl_configure(int id, int newId);
 void dxl_configure_all();
