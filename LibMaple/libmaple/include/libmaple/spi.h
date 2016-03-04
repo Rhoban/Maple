@@ -459,6 +459,20 @@ static inline uint8 spi_is_busy(spi_dev *dev) {
     return dev->regs->SR & SPI_SR_BSY;
 }
 
+static inline uint32 spi_tx_inline(spi_dev *dev, const void *buf, uint32 len) {
+    uint32 txed = 0;
+    uint8 byte_frame = spi_dff(dev) == SPI_DFF_8_BIT;
+    while (spi_is_tx_empty(dev) && (txed < len)) {
+        if (byte_frame) {
+            dev->regs->DR = ((const uint8*)buf)[txed++];
+        } else {
+            dev->regs->DR = ((const uint16*)buf)[txed++];
+        }
+    }
+    return txed;
+}
+
+
 /*
  * I2S convenience functions (TODO)
  */
