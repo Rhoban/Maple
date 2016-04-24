@@ -298,7 +298,7 @@ pc_error:
 }
 #endif
 
-void dxl_init(int baudrate)
+void dxl_init(int baudrate, bool wheel)
 {
 #if defined(DXL_AVAILABLE)
     dxl_timeout = 10000000/baudrate;
@@ -317,7 +317,12 @@ void dxl_init(int baudrate)
     digitalWrite(DXL_DIRECTION, DXL_DIRECTION_RX);
 
     DXL_DEVICE.begin(baudrate);
-    dxl_disable_all();
+
+    if (wheel) {
+        dxl_set_mode(DXL_BROADCAST, DXL_WHEEL);
+    } else {
+        dxl_disable_all();
+    }
 #endif
 }
 
@@ -809,4 +814,17 @@ void dxl_configure(int id, int newId)
         delay(DXL_WRITE_DELAY);
         dxl_write_byte(newId, DXL_RETURN_LEVEL, 1);
     }
+}
+
+void dxl_set_mode(int id, int mode)
+{
+    dxl_write_byte(id, DXL_MODE, mode);
+}
+
+void dxl_set_velocity(int id, int power)
+{
+    if (power < 0) {
+        power = (1<<10) | (-power);
+    }
+    dxl_write_word(id, DXL_GOAL_SPEED, power);
 }

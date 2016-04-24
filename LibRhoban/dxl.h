@@ -65,6 +65,7 @@
 #define DXL_ID              0x03
 #define DXL_BAUD            0x04
 #define DXL_RETURN_DELAY    0x05
+#define DXL_MODE            0x0B
 #define DXL_RETURN_LEVEL    0x11
 #define DXL_COMPLIANCE_MARGIN_CW 0x1A
 #define DXL_COMPLIANCE_MARGIN_CCW 0x1B
@@ -72,6 +73,10 @@
 #define DXL_COMPLIANCE_CCW  0x1D
 #define DXL_PIDP            29
 
+#define DXL_WHEEL           1
+#define DXL_JOINT           2
+
+#define DXL_TORQUE_EN       0x18
 #define DXL_LED             0x19
 #define DXL_GOAL_POSITION   0x1E
 #define DXL_GOAL_SPEED      0x20
@@ -129,7 +134,7 @@ ui8 dxl_compute_checksum(struct dxl_packet *packet);
 void dxl_send(struct dxl_packet *packet);
 
 // Initialize dynamixel system (if available)
-void dxl_init(int baudrate = 1000000);
+void dxl_init(int baudrate = 1000000, bool wheel=false);
 
 // Run the dynamixel forward
 void dxl_forward();
@@ -192,5 +197,8 @@ void dxl_pidp(int p);
 
 void dxl_configure(int id, int newId);
 void dxl_configure_all();
+
+void dxl_set_mode(int id, int mode);
+void dxl_set_velocity(int id, int power);
 
 #endif // DXL_H
