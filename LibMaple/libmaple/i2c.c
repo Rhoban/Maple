@@ -42,6 +42,10 @@
 #include <libmaple/i2c.h>
 #include <libmaple/systick.h>
 
+//extern void led_on();
+//extern void led_off();
+
+
 #include <string.h>
 
 static inline int32 wait_for_state_change(i2c_dev *dev,
@@ -205,6 +209,46 @@ void i2c_master_enable(i2c_dev *dev, uint32 flags) {
 }
 
 /**
+ * Generates a start condition with timeout expiration
+ */
+static inline int i2c_start_condition_timeout(i2c_dev *dev) {
+    uint32 cr1;
+    uint32 start = systick_uptime();
+    while ((cr1 = dev->regs->CR1) & (I2C_CR1_START |
+                                     I2C_CR1_STOP  |
+                                     I2C_CR1_PEC)) {
+        if (systick_uptime()-start > 2) {
+            return 1;
+        }
+    }
+    dev->regs->CR1 |= I2C_CR1_START;
+    return 0;
+}
+
+static inline int i2c_stop_condition_timeout(i2c_dev *dev) {
+    uint32 cr1;
+    uint32 start = systick_uptime();
+    while ((cr1 = dev->regs->CR1) & (I2C_CR1_START |
+                                     I2C_CR1_STOP  |
+                                     I2C_CR1_PEC)) {
+        if (systick_uptime()-start > 2) {
+            return 1;
+        }
+    }
+    dev->regs->CR1 |= I2C_CR1_STOP;
+    start = systick_uptime();
+    while ((cr1 = dev->regs->CR1) & (I2C_CR1_START |
+                                     I2C_CR1_STOP  |
+                                     I2C_CR1_PEC)) {
+        if (systick_uptime()-start > 2) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+/**
  * @brief Process an i2c transaction.
  *
  * Transactions are composed of one or more i2c_msg's, and may be read
@@ -234,7 +278,9 @@ int32 i2c_master_xfer(i2c_dev *dev,
     dev->state = I2C_STATE_BUSY;
 
     i2c_enable_irq(dev, I2C_IRQ_EVENT);
-    i2c_start_condition(dev);
+    if (i2c_start_condition_timeout(dev)) {
+        return -1;
+    }
 
     rc = wait_for_state_change(dev, I2C_STATE_XFER_DONE, timeout);
     if (rc < 0) {
@@ -334,10 +380,10 @@ void _i2c_irq_handler(i2c_dev *dev) {
             if (msg->length == 1) {
                 i2c_disable_ack(dev);
                 if (dev->msgs_left > 1) {
-                    i2c_start_condition(dev);
+                    if (i2c_start_condition_timeout(dev)) return;
                     I2C_CRUMB(RX_ADDR_START, 0, 0);
                 } else {
-                    i2c_stop_condition(dev);
+                    if (i2c_stop_condition_timeout(dev)) return;
                     I2C_CRUMB(RX_ADDR_STOP, 0, 0);
                 }
             }
@@ -393,12 +439,12 @@ void _i2c_irq_handler(i2c_dev *dev) {
              * won't interrupt, but if we don't disable ITEVTEN, BTF will
              * continually interrupt us. What the fuck ST?
              */
-            i2c_start_condition(dev);
+            if (i2c_start_condition_timeout(dev)) return;
             while (!(dev->regs->SR1 & I2C_SR1_SB))
                 ;
             dev->msg++;
         } else {
-            i2c_stop_condition(dev);
+            if (i2c_stop_condition_timeout(dev)) return;
 
             /*
              * Turn off event interrupts to keep BTF from firing until
@@ -428,10 +474,10 @@ void _i2c_irq_handler(i2c_dev *dev) {
         if (msg->xferred == (msg->length - 1)) {
             i2c_disable_ack(dev);
             if (dev->msgs_left > 2) {
-                i2c_start_condition(dev);
+                if (i2c_start_condition_timeout(dev)) return;
                 I2C_CRUMB(RXNE_START_SENT, 0, 0);
             } else {
-                i2c_stop_condition(dev);
+            if (i2c_stop_condition_timeout(dev)) return;
                 I2C_CRUMB(RXNE_STOP_SENT, 0, 0);
             }
         } else if (msg->xferred == msg->length) {
@@ -464,7 +510,7 @@ void _i2c_irq_error_handler(i2c_dev *dev) {
     dev->regs->SR1 = 0;
     dev->regs->SR2 = 0;
 
-    i2c_stop_condition(dev);
+//    i2c_stop_condition_timeout(dev);
     i2c_disable_irq(dev, I2C_IRQ_BUFFER | I2C_IRQ_EVENT | I2C_IRQ_ERROR);
     dev->state = I2C_STATE_ERROR;
 }
