@@ -17,6 +17,7 @@
 #define DXL_MAX_PARAMS 140
 
 // Direction pin
+#ifdef HAS_DXL
 #if defined(BOARD_opencm904)
 #define DXL_DIRECTION  28
 #define DXL_DIRECTION_TX        HIGH
@@ -37,6 +38,7 @@
 #define DXL_DIRECTION_RX        HIGH
 #define DXL_DEVICE     Serial3
 #define DXL_AVAILABLE
+#endif
 #endif
 
 // Registers
@@ -93,6 +95,9 @@
 #define DXL_CMD_READ    0x02
 #define DXL_CMD_WRITE   0x03
 #define DXL_CMD_SYNC_WRITE      0x83
+
+#define DXL_MODE_WHEEL  1
+#define DXL_MODE_JOINT  2
 
 // Dynamixel max id
 #define DXL_MAX_ID 20

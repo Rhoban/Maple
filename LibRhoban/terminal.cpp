@@ -307,6 +307,7 @@ void terminal_disable()
 
 void terminal_enable()
 {
+    terminal_last_ok = false;
     disabled = false;
 }
 
