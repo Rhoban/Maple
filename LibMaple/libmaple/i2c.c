@@ -45,6 +45,7 @@
 //extern void led_on();
 //extern void led_off();
 
+#define TIMEOUT_CYCLES  50000
 
 #include <string.h>
 
@@ -213,13 +214,11 @@ void i2c_master_enable(i2c_dev *dev, uint32 flags) {
  */
 static inline int i2c_start_condition_timeout(i2c_dev *dev) {
     uint32 cr1;
-    uint32 start = systick_uptime();
+    uint32 k = 0;
     while ((cr1 = dev->regs->CR1) & (I2C_CR1_START |
                                      I2C_CR1_STOP  |
                                      I2C_CR1_PEC)) {
-        if (systick_uptime()-start > 2) {
-            return 1;
-        }
+        if ((k++) > TIMEOUT_CYCLES) return 1;
     }
     dev->regs->CR1 |= I2C_CR1_START;
     return 0;
@@ -227,22 +226,17 @@ static inline int i2c_start_condition_timeout(i2c_dev *dev) {
 
 static inline int i2c_stop_condition_timeout(i2c_dev *dev) {
     uint32 cr1;
-    uint32 start = systick_uptime();
+    uint32 k = 0;
     while ((cr1 = dev->regs->CR1) & (I2C_CR1_START |
                                      I2C_CR1_STOP  |
                                      I2C_CR1_PEC)) {
-        if (systick_uptime()-start > 2) {
-            return 1;
-        }
+        if ((k++) > TIMEOUT_CYCLES) return 1;
     }
     dev->regs->CR1 |= I2C_CR1_STOP;
-    start = systick_uptime();
     while ((cr1 = dev->regs->CR1) & (I2C_CR1_START |
                                      I2C_CR1_STOP  |
                                      I2C_CR1_PEC)) {
-        if (systick_uptime()-start > 2) {
-            return 1;
-        }
+        if ((k++) > TIMEOUT_CYCLES) return 1;
     }
 
     return 0;
@@ -303,6 +297,7 @@ static inline int32 wait_for_state_change(i2c_dev *dev,
                                           i2c_state state,
                                           uint32 timeout) {
     i2c_state tmp;
+    uint32 k = 0;
 
     while (1) {
         tmp = dev->state;
@@ -316,9 +311,7 @@ static inline int32 wait_for_state_change(i2c_dev *dev,
         }
 
         if (timeout) {
-            if (systick_uptime() > (dev->timestamp + timeout)) {
-                /* TODO: overflow? */
-                /* TODO: racy? */
+            if ((k++) > TIMEOUT_CYCLES) {
                 return I2C_ERROR_TIMEOUT;
             }
         }
@@ -510,7 +503,7 @@ void _i2c_irq_error_handler(i2c_dev *dev) {
     dev->regs->SR1 = 0;
     dev->regs->SR2 = 0;
 
-//    i2c_stop_condition_timeout(dev);
+    i2c_stop_condition_timeout(dev);
     i2c_disable_irq(dev, I2C_IRQ_BUFFER | I2C_IRQ_EVENT | I2C_IRQ_ERROR);
     dev->state = I2C_STATE_ERROR;
 }
