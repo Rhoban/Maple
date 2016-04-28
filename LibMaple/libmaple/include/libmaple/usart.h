@@ -45,6 +45,11 @@ extern "C"{
 #include <libmaple/ring_buffer.h>
 #include <series/usart.h>
 
+typedef void (*tc_handler)(void);
+extern tc_handler usart1_tc_handler;
+extern tc_handler usart2_tc_handler;
+extern tc_handler usart3_tc_handler;
+
 /*
  * Register map (common across supported STM32 series).
  */
@@ -59,6 +64,8 @@ typedef struct usart_reg_map {
     __io uint32 CR3;            /**< Control register 3 */
     __io uint32 GTPR;           /**< Guard time and prescaler register */
 } usart_reg_map;
+
+void usart_tcie(usart_reg_map *regs, int en);
 
 /*
  * Register bit definitions
