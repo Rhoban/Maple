@@ -34,6 +34,10 @@
 
 #include <libmaple/usart.h>
 
+tc_handler usart1_tc_handler = NULL;
+tc_handler usart2_tc_handler = NULL;
+tc_handler usart3_tc_handler = NULL;
+
 /**
  * @brief Initialize a serial port.
  * @param dev         Serial port to be initialized
@@ -42,6 +46,11 @@ void usart_init(usart_dev *dev) {
     rb_init(dev->rb, USART_RX_BUF_SIZE, dev->rx_buf);
     rcc_clk_enable(dev->clk_id);
     nvic_irq_enable(dev->irq_num);
+}
+
+void usart_tcie(usart_reg_map *regs, int en) {
+    if (en) regs->CR1 |= USART_CR1_TCIE;
+    else regs->CR1 &= ~USART_CR1_TCIE;
 }
 
 /**

@@ -38,6 +38,19 @@
 #include <libmaple/usart.h>
 
 static inline __always_inline void usart_irq(ring_buffer *rb, usart_reg_map *regs) {
+    if (regs->SR & USART_SR_TC) {
+        if (regs == USART1_BASE && usart1_tc_handler) {
+            usart1_tc_handler();
+        }
+        if (regs == USART2_BASE && usart2_tc_handler) {
+            usart2_tc_handler();
+        }
+        if (regs == USART3_BASE && usart3_tc_handler) {
+            usart3_tc_handler();
+        }
+        regs->SR &= ~USART_SR_TC;
+    }
+
     if (regs->SR & USART_SR_RXNE) {
 #ifdef USART_SAFE_INSERT
         /* If the buffer is full and the user defines USART_SAFE_INSERT,
