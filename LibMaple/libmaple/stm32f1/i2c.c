@@ -124,6 +124,7 @@ void _i2c_irq_priority_fixup(i2c_dev *dev) {
      * interrupt in the system (priority level 0). All other interrupts have
      * been initialized to priority level 16. See nvic_init().
      */
-    nvic_irq_set_priority(dev->ev_nvic_line, 0);
-    nvic_irq_set_priority(dev->er_nvic_line, 0);
+    // GREG: Pas cap!
+    nvic_irq_set_priority(dev->ev_nvic_line, 1);
+    nvic_irq_set_priority(dev->er_nvic_line, 1);
 }
