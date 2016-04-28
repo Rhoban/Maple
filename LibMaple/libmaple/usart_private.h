@@ -47,6 +47,10 @@ static inline __always_inline void usart_irq(ring_buffer *rb, usart_reg_map *reg
         /* By default, push bytes around in the ring buffer. */
         rb_push_insert(rb, (uint8)regs->DR);
 #endif
+    } else {
+        if (regs->SR & USART_SR_ORE) {
+            (void)regs->DR;
+        }
     }
 }
 
