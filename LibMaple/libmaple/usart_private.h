@@ -41,14 +41,16 @@ static inline __always_inline void usart_irq(ring_buffer *rb, usart_reg_map *reg
     if (regs->SR & USART_SR_TC) {
         if (regs == USART1_BASE && usart1_tc_handler) {
             usart1_tc_handler();
+            regs->SR &= ~USART_SR_TC;
         }
         if (regs == USART2_BASE && usart2_tc_handler) {
             usart2_tc_handler();
+            regs->SR &= ~USART_SR_TC;
         }
         if (regs == USART3_BASE && usart3_tc_handler) {
             usart3_tc_handler();
+            regs->SR &= ~USART_SR_TC;
         }
-        regs->SR &= ~USART_SR_TC;
     }
 
     if (regs->SR & USART_SR_RXNE) {
