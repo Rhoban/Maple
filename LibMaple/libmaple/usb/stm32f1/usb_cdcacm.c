@@ -373,7 +373,11 @@ void usb_cdcacm_enable(gpio_dev *disc_dev, uint8 disc_bit) {
      * pull USB_DP pin up while leaving USB_DM pulled down by the
      * transceiver. See USB 2.0 spec, section 7.1.7.3. */
     gpio_set_mode(disc_dev, disc_bit, GPIO_OUTPUT_PP);
+#ifdef USB_DISC_INVERTED
+    gpio_write_bit(disc_dev, disc_bit, 1);
+#else
     gpio_write_bit(disc_dev, disc_bit, 0);
+#endif
 
     /* Initialize the USB peripheral. */
     usb_init_usblib(USBLIB, ep_int_in, ep_int_out);
@@ -383,7 +387,11 @@ void usb_cdcacm_disable(gpio_dev *disc_dev, uint8 disc_bit) {
     /* Turn off the interrupt and signal disconnect (see e.g. USB 2.0
      * spec, section 7.1.7.3). */
     nvic_irq_disable(NVIC_USB_LP_CAN_RX0);
+#ifdef USB_DISC_INVERTED
+    gpio_write_bit(disc_dev, disc_bit, 0);
+#else
     gpio_write_bit(disc_dev, disc_bit, 1);
+#endif
 }
 
 void usb_cdcacm_putc(char ch) {

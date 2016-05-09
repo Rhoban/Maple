@@ -38,6 +38,13 @@
 #include <libmaple/usart.h>
 
 static inline __always_inline void usart_irq(ring_buffer *rb, usart_reg_map *regs) {
+#ifdef UART_PARITY_CHECK
+    if (regs->SR & USART_SR_PE) {
+        regs->SR &= ~USART_SR_PE;
+        return;
+    }
+#endif
+
     if (regs->SR & USART_SR_TC) {
         if (regs == USART1_BASE && usart1_tc_handler) {
             usart1_tc_handler();
