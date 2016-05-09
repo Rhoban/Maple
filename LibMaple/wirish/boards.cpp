@@ -149,7 +149,7 @@ static void setup_clocks(void) {
 #elif defined(BOOTLOADER_robotis)
 #define USER_ADDR_ROM 0x08003000
 #endif
-#define USER_ADDR_RAM 0x20000C00
+#define USER_ADDR_RAM 0x20000000
 extern char __text_start__;
 
 static void setup_nvic(void) {
