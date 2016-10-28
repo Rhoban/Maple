@@ -661,7 +661,7 @@ bool dxl_read(ui8 id, ui8 addr, char *output, int size)
 #ifdef DXL_VERSION_2
         offset = 1;
 #endif
-        for (int i=0; i<reply->parameter_nb; i++) {
+        for (int i=0; i<size; i++) {
             output[i] = reply->parameters[i+offset];
         }
     }
