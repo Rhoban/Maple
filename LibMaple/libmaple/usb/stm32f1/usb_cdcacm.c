@@ -86,8 +86,13 @@ static void usbSetDeviceAddress(void);
  */
 
 /* FIXME move to Wirish */
+#if defined(BOOTLOADER_robotis)
+#define LEAFLABS_ID_VENDOR                0xFFF1
+#define MAPLE_ID_PRODUCT                  0xFF48
+#else
 #define LEAFLABS_ID_VENDOR                0x1EAF
 #define MAPLE_ID_PRODUCT                  0x0004
+#endif
 static const usb_descriptor_device usbVcomDescriptor_Device =
     USB_CDCACM_DECLARE_DEV_DESC(LEAFLABS_ID_VENDOR, MAPLE_ID_PRODUCT);
 
@@ -225,17 +230,17 @@ static const usb_descriptor_string usbVcomDescriptor_LangID = {
 
 /* FIXME move to Wirish */
 static const usb_descriptor_string usbVcomDescriptor_iManufacturer = {
-    .bLength = USB_DESCRIPTOR_STRING_LEN(8),
+    .bLength = USB_DESCRIPTOR_STRING_LEN(6),
     .bDescriptorType = USB_DESCRIPTOR_TYPE_STRING,
-    .bString = {'L', 0, 'e', 0, 'a', 0, 'f', 0,
-                'L', 0, 'a', 0, 'b', 0, 's', 0},
+    .bString = {'R', 0, 'h', 0, 'o', 0, 'b', 0,
+                'a', 0, 'n', 0},
 };
 
 /* FIXME move to Wirish */
 static const usb_descriptor_string usbVcomDescriptor_iProduct = {
-    .bLength = USB_DESCRIPTOR_STRING_LEN(5),
+    .bLength = USB_DESCRIPTOR_STRING_LEN(7),
     .bDescriptorType = USB_DESCRIPTOR_TYPE_STRING,
-    .bString = {'M', 0, 'a', 0, 'p', 0, 'l', 0, 'e', 0},
+    .bString = {'M', 0, 'e', 0, 't', 0, 'a', 0, 'b', 0, 'o', 0, 't', 0},
 };
 
 static ONE_DESCRIPTOR Device_Descriptor = {
