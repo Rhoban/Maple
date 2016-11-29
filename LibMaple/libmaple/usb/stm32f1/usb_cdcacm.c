@@ -256,8 +256,8 @@ static ONE_DESCRIPTOR Config_Descriptor = {
 #define N_STRING_DESCRIPTORS 3
 static ONE_DESCRIPTOR String_Descriptor[N_STRING_DESCRIPTORS] = {
     {(uint8*)&usbVcomDescriptor_LangID,       USB_DESCRIPTOR_STRING_LEN(1)},
-    {(uint8*)&usbVcomDescriptor_iManufacturer,USB_DESCRIPTOR_STRING_LEN(8)},
-    {(uint8*)&usbVcomDescriptor_iProduct,     USB_DESCRIPTOR_STRING_LEN(5)}
+    {(uint8*)&usbVcomDescriptor_iManufacturer,USB_DESCRIPTOR_STRING_LEN(6)},
+    {(uint8*)&usbVcomDescriptor_iProduct,     USB_DESCRIPTOR_STRING_LEN(7)}
 };
 
 /*
