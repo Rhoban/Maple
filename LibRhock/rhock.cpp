@@ -3,6 +3,7 @@
 #include <terminal.h>
 #include <rhock/stream.h>
 #include <rhock/vm.h>
+#include <rhock/program.h>
 #include "rhock.h"
 
 const char rhock_exit[] = "!rhock\r";
@@ -51,4 +52,9 @@ void rhock_tick()
     }
 
     rhock_vm_tick();
+}
+
+void rhock_killall()
+{
+    rhock_program_killall();
 }

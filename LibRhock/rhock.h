@@ -3,5 +3,6 @@
 
 bool is_rhock_mode();
 void rhock_tick();
+void rhock_killall();
 
 #endif
