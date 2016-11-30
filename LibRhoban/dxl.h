@@ -94,6 +94,7 @@
 #define DXL_CMD_PING    0x01
 #define DXL_CMD_READ    0x02
 #define DXL_CMD_WRITE   0x03
+#define DXL_CMD_SYNC_READ       0x82
 #define DXL_CMD_SYNC_WRITE      0x83
 
 #define DXL_MODE_WHEEL  1
@@ -168,6 +169,7 @@ void dxl_write_word(ui8 id, ui8 addr, int value);
 bool dxl_read(ui8 id, ui8 addr, char *output, int size);
 ui8 dxl_read_byte(ui8 id, ui8 addr, bool *success = NULL);
 int dxl_read_word(ui8 id, ui8 addr, bool *success = NULL);
+bool dxl_sync_read(ui8 *ids, int count, ui8 addr, ui8 length, ui8 *output);
 
 // Position
 float dxl_get_position(ui8 id, bool *success = NULL);

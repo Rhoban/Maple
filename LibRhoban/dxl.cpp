@@ -688,6 +688,41 @@ int dxl_read_word(ui8 id, ui8 addr, bool *success)
     return dxl_makeword(buffer[0], buffer[1]);
 }
 
+bool dxl_sync_read(ui8 *ids, int count, ui8 addr, ui8 size, ui8 *output)
+{
+#ifdef DXL_VERSION_1
+    return;
+#endif
+
+    struct dxl_packet request;
+    request.id = DXL_BROADCAST;
+    request.instruction = DXL_CMD_SYNC_READ;
+    request.parameter_nb = 4 + count;
+    request.parameters[0] = addr&0xff;
+    request.parameters[1] = (addr>>8)&0xff;
+    request.parameters[2] = size&0xff;
+    request.parameters[3] = (size>>8)&0xff;
+    for (int k=0; k<count; k++) {
+        request.parameters[4+k] = ids[k];
+    }
+
+    dxl_send(&request);
+
+    for (int k=0; k<count; k++) {
+        incoming_packet.process = false;
+        struct dxl_packet *reply = dxl_get_reply();
+        if (reply == NULL) {
+            return false;
+        } else {
+            for (int i=0; i<size; i++) {
+                output[size*k + i] = reply->parameters[1+i];
+            }
+        }
+    }
+
+    return true;
+}
+
 void dxl_set_zero(ui8 id, float zero)
 {
     if (id < DXL_MAX_ID && id != 0) {
