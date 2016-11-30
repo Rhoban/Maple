@@ -52,24 +52,35 @@ TERMINAL_COMMAND(forward,
     }
 }
 
+bool can_start() __attribute__((weak));
+
+bool can_start() 
+{
+    return true;
+}
+
 void start()
 {
-    servos_enable_all();
-    started = true;
+    if (can_start()) {
+        servos_enable_all();
+        started = true;
 #if defined(DXL_AVAILABLE)
-    tick();
-    dxl_flush();
-    dxl_configure_all();
-    dxl_wakeup();
+        tick();
+        dxl_flush();
+        dxl_configure_all();
+        dxl_wakeup();
 
-    float voltage = dxl_average_voltage();
-    if (voltage < 6) {
-        terminal_io()->print("Warning: dynamixel voltage is low (");
-        terminal_io()->print(voltage);
-        terminal_io()->println(")");
-    }
+        float voltage = dxl_average_voltage();
+        if (voltage < 6) {
+            terminal_io()->print("Warning: dynamixel voltage is low (");
+            terminal_io()->print(voltage);
+            terminal_io()->println(")");
+        }
 #endif
-    terminal_io()->println("OK");
+        terminal_io()->println("OK");
+    } else {
+        terminal_io()->println("KO");
+    }
 }
 
 void stop()
