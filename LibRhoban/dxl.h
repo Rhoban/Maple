@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+//#define DXL_VERSION_1
 #if !defined(DXL_VERSION_1)
 #define DXL_VERSION_2
 #endif
@@ -52,6 +53,9 @@
 #define DXL_COMPLIANCE_CW   0x1C
 #define DXL_COMPLIANCE_CCW  0x1D
 #define DXL_LED             0x19
+
+#define DXL_WHEEL           1
+#define DXL_JOINT           2
 
 #define DXL_GOAL_POSITION   0x1E
 #define DXL_GOAL_SPEED      0x20

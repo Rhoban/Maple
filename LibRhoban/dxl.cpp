@@ -109,6 +109,8 @@ int dxl_write_packet(struct dxl_packet *packet, ui8 *buffer)
 
     return pos;
 }
+
+
 #endif
 
 void dxl_copy_packet(struct dxl_packet *from, struct dxl_packet *to)
@@ -691,7 +693,7 @@ int dxl_read_word(ui8 id, ui8 addr, bool *success)
 bool dxl_sync_read(ui8 *ids, int count, ui8 addr, ui8 size, ui8 *output)
 {
 #ifdef DXL_VERSION_1
-    return;
+    return false;
 #endif
 
     struct dxl_packet request;
@@ -853,8 +855,14 @@ void dxl_configure(int id, int newId)
 
 void dxl_set_mode(int id, int mode)
 {
+#if defined(DXL_VERSION_2)
     dxl_write_byte(id, DXL_MODE, mode);
+#endif
+#if defined(DXL_VERSION_1)
+    //TODO not implemented (if wheel, set both angle limits to the same value, if joint we need the angle limits as parameters)
+#endif
 }
+
 
 void dxl_set_velocity(int id, int power)
 {
