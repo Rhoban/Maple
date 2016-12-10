@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-//#define DXL_VERSION_1
+#define DXL_VERSION_1
 #if !defined(DXL_VERSION_1)
 #define DXL_VERSION_2
 #endif
@@ -57,6 +57,7 @@
 #define DXL_WHEEL           1
 #define DXL_JOINT           2
 
+#define DXL_TORQUE_EN       0x18
 #define DXL_GOAL_POSITION   0x1E
 #define DXL_GOAL_SPEED      0x20
 #define DXL_GOAL_TORQUE     0x22

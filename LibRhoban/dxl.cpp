@@ -599,6 +599,10 @@ float dxl_get_target_position(ui8 id)
 
 void dxl_disable(ui8 id)
 {   
+#if defined(DXL_VERSION_1)
+    dxl_write_word(id, DXL_TORQUE_EN, 0);
+    delay(DXL_WRITE_DELAY);
+#endif
     dxl_write_word(id, DXL_GOAL_TORQUE, 0);
     delay(DXL_WRITE_DELAY);
     dxl_write_byte(id, DXL_LED, 1);
@@ -607,6 +611,10 @@ void dxl_disable(ui8 id)
 
 void dxl_enable(ui8 id, int torque)
 {   
+#if defined(DXL_VERSION_1)
+    dxl_write_word(id, DXL_TORQUE_EN, 1);
+    delay(DXL_WRITE_DELAY);
+#endif
     dxl_write_word(id, DXL_GOAL_SPEED, 1023);
     delay(DXL_WRITE_DELAY);
     dxl_write_word(id, DXL_GOAL_TORQUE, torque);
