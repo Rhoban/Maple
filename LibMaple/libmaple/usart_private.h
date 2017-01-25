@@ -45,7 +45,8 @@ static inline __always_inline void usart_irq(ring_buffer *rb, usart_reg_map *reg
     }
 #endif
 
-    if (regs->SR & USART_SR_TC) {
+    int sr = regs->SR;
+    if (sr & USART_SR_TC) {
         if (regs == USART1_BASE && usart1_tc_handler) {
             usart1_tc_handler();
             regs->SR &= ~USART_SR_TC;
@@ -60,7 +61,7 @@ static inline __always_inline void usart_irq(ring_buffer *rb, usart_reg_map *reg
         }
     }
 
-    if (regs->SR & USART_SR_RXNE) {
+    if (sr & USART_SR_RXNE) {
 #ifdef USART_SAFE_INSERT
         /* If the buffer is full and the user defines USART_SAFE_INSERT,
          * ignore new bytes. */
