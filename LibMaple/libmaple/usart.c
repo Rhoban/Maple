@@ -66,10 +66,13 @@ void usart_tcie(usart_reg_map *regs, int en) {
  */
 void usart_enable(usart_dev *dev) {
     usart_reg_map *regs = dev->regs;
+#ifdef UART_PARITY_CHECK
+    regs->CR1 = (USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE |
+                 USART_CR1_M_9N1 | USART_CR1_PCE);
+    regs->CR2 |= USART_CR2_STOP_BITS_1;
+#else
     regs->CR1 = (USART_CR1_TE | USART_CR1_RE | USART_CR1_RXNEIE |
                  USART_CR1_M_8N1);
-#ifdef UART_PARITY_CHECK
-    regs->CR1 |= USART_CR1_PS_EVEN;
 #endif
     regs->CR1 |= USART_CR1_UE;
 }
