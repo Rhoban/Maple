@@ -752,6 +752,7 @@ struct dxl_config *dxl_get_config(ui8 id)
 void dxl_disable_all()
 {
     dxl_write_word(DXL_BROADCAST, DXL_GOAL_TORQUE, 0);
+    dxl_write_word(DXL_BROADCAST, DXL_TORQUE_EN, 0);
     delay(1);
     dxl_write_byte(DXL_BROADCAST, DXL_LED, 1);
 }
