@@ -16,9 +16,10 @@ Then:
     make
     make install
 
-## Installing DFU-UTIL 0.1
+## Installing `dfu-util` 0.1
 
-First, install lib usb:
+The old version of dfu-util (0.1) is faster to flash. To install it, first
+install libusb:
 
     sudo apt-get install libusb-dev
 
