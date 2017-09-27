@@ -107,3 +107,18 @@ uint16 adc_read(const adc_dev *dev, uint8 channel) {
 
     return (uint16)(regs->DR & ADC_DR_DATA);
 }
+
+void adc_read_run(const adc_dev *dev, uint8 channel) {
+    adc_reg_map *regs = dev->regs;
+
+    adc_set_reg_seqlen(dev, 1);
+
+    regs->SQR3 = channel;
+    regs->CR1 |= ADC_CR1_EOCIE;
+    regs->CR2 |= ADC_CR2_SWSTART;
+}
+
+uint16 adc_read_value(const adc_dev *dev, uint8 channel) {
+    adc_reg_map *regs = dev->regs;
+    return (uint16)(regs->DR & ADC_DR_DATA);
+}

@@ -143,6 +143,8 @@ uint32 digitalRead(uint8 pin);
  * @see pinMode()
  */
 uint16 analogRead(uint8 pin);
+void analogReadRun(uint8 pin);
+uint16 analogReadValue(uint8 pin);
 
 /**
  * Toggles the digital value at the given pin.

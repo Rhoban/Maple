@@ -245,6 +245,8 @@ void adc_init(const adc_dev *dev);
 void adc_set_extsel(const adc_dev *dev, adc_extsel_event event);
 void adc_set_sample_rate(const adc_dev *dev, adc_smp_rate smp_rate);
 uint16 adc_read(const adc_dev *dev, uint8 channel);
+void adc_read_run(const adc_dev *dev, uint8 channel);
+uint16 adc_read_value(const adc_dev *dev, uint8 channel);
 
 /**
  * @brief Set the ADC prescaler.
