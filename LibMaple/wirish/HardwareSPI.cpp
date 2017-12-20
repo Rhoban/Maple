@@ -148,6 +148,13 @@ void HardwareSPI::end(void) {
     spi_peripheral_disable(this->spi_d);
 }
 
+void HardwareSPI::wait() {
+    while (!spi_is_tx_empty(this->spi_d))
+        ;
+    while (spi_is_busy(this->spi_d))
+        ;
+}
+
 /*
  * I/O
  */
