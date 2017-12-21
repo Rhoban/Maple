@@ -62,6 +62,14 @@ typedef struct iwdg_reg_map {
 /** Independent watchdog base pointer */
 #define IWDG_BASE                       ((struct iwdg_reg_map*)0x40003000)
 
+typedef struct wwdg_reg_map {
+    __io uint32 CR;
+    __io uint32 CFR;
+    __io uint32 SR;
+} wwdg_reg_map;
+
+#define WWDG_BASE                       ((struct wwdg_reg_map*)0x40002C00)
+
 /*
  * Register bit definitions
  */
