@@ -39,7 +39,7 @@ void setup()
     pinMode(BOOT1_PIN, OUTPUT);
 
     // Serial
-    Serial3.begin(115200);
+    Serial3.begin(57600);
         
     resetSequence();
 }
