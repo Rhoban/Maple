@@ -20,6 +20,7 @@ cppSRCS_$(d) += function.cpp
 cppSRCS_$(d) += dxl.cpp
 cppSRCS_$(d) += main.cpp
 cppSRCS_$(d) += flash_write.cpp
+cppSRCS_$(d) += watchdog.cpp
 
 ifeq ($(ENABLE_COMMANDS),yes)
 cppSRCS_$(d) += commands.cpp

@@ -111,6 +111,8 @@ public:
      */
     void end(void);
 
+    void wait();
+
     /*
      * I/O
      */

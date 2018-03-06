@@ -437,6 +437,7 @@ typedef enum rcc_clk_id {
     RCC_UART4,
     RCC_UART5,
     RCC_USB,
+    RCC_WWDG
 } rcc_clk_id;
 
 /**

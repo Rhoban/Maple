@@ -15,3 +15,26 @@ Then:
 
     make
     make install
+
+## Installing `dfu-util` 0.1
+
+The old version of dfu-util (0.1) is faster to flash. To install it, first
+install libusb:
+
+    sudo apt-get install libusb-dev
+
+Then, do the following:
+
+    git clone git://git.code.sf.net/p/dfu-util/dfu-util
+    cd dfu-util
+    git checkout v0.1
+    ./autogen.sh
+    ./configure
+    make
+
+The `dfu-util` tool will be built in the src/ repository, you can add it
+in your `$PATH` in your `.bashrc`, like:
+
+    export PATH="$HOME/dfu-util/src:$PATH"
+
+

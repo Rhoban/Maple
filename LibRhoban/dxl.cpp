@@ -681,7 +681,7 @@ ui8 dxl_read_byte(ui8 id, ui8 addr, bool *success)
 int dxl_read_word(ui8 id, ui8 addr, bool *success)
 {
     bool dummy;
-    ui8 buffer[2];
+    ui8 buffer[2] = {0,0};
     success = (success != NULL) ? success : &dummy;
     *success = dxl_read(id, addr, (char*)buffer, sizeof(buffer));
 

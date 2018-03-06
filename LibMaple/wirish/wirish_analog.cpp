@@ -45,3 +45,21 @@ uint16 analogRead(uint8 pin) {
 
     return adc_read(dev, PIN_MAP[pin].adc_channel);
 }
+
+void analogReadRun(uint8 pin) {
+    const adc_dev *dev = PIN_MAP[pin].adc_device;
+    if (dev == NULL) {
+        return;
+    }
+
+    adc_read_run(dev, PIN_MAP[pin].adc_channel);
+}
+
+uint16 analogReadValue(uint8 pin) {
+    const adc_dev *dev = PIN_MAP[pin].adc_device;
+    if (dev == NULL) {
+        return 0;
+    }
+
+    return adc_read_value(dev, PIN_MAP[pin].adc_channel);
+}
