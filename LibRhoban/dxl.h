@@ -46,6 +46,7 @@
 #define DXL_ID              0x03
 #define DXL_BAUD            0x04
 #define DXL_RETURN_DELAY    0x05
+#define DXL_MODE            0x0B
 #define DXL_RETURN_LEVEL    0x10
 #define DXL_COMPLIANCE_MARGIN_CW 0x1A
 #define DXL_COMPLIANCE_MARGIN_CCW 0x1B
@@ -61,6 +62,10 @@
 #define DXL_TORQUE          0x28
 #define DXL_VOLTAGE         0x2a
 #define DXL_TEMPERATURE     0x2b
+#define DXL_TORQUE_EN       0x40
+
+#define DXL_WHEEL           1
+#define DXL_JOINT           3
 #endif
 
 #ifdef DXL_VERSION_2

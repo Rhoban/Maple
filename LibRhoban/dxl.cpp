@@ -691,7 +691,7 @@ int dxl_read_word(ui8 id, ui8 addr, bool *success)
 bool dxl_sync_read(ui8 *ids, int count, ui8 addr, ui8 size, ui8 *output)
 {
 #ifdef DXL_VERSION_1
-    return;
+    return false;
 #endif
 
     struct dxl_packet request;
