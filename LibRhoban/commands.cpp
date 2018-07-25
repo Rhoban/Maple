@@ -62,7 +62,7 @@ bool can_start()
 void start()
 {
     if (can_start()) {
-        servos_enable_all();
+        //servos_enable_all();
         started = true;
 #if defined(DXL_AVAILABLE)
         tick();
@@ -85,7 +85,7 @@ void start()
 
 void stop()
 {
-    servos_disable_all();
+    //servos_disable_all();
 #if defined(DXL_AVAILABLE)
     dxl_disable_all();
 #endif

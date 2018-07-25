@@ -4,6 +4,10 @@ dirstack_$(sp)  := $(d)
 d               := $(dir)
 BUILDDIRS       += $(BUILD_PATH)/$(d)
 
+ifndef $(ENABLE_DXL)
+ENABLE_DXL := yes
+endif
+
 # Safe includes for Wirish.
 WIRISH_INCLUDES := -I$(LIB_MAPLE_HOME)/wirish/include -I$(LIB_MAPLE_HOME)/wirish/$(WIRISH_BOARD_PATH)/include
 
@@ -15,16 +19,20 @@ CFLAGS_$(d) = $(LIBMAPLE_INCLUDES) $(WIRISH_INCLUDES) $(LIBROBOT_INCLUDES) -Wall
 
 # Local rules and targets
 cppSRCS_$(d) := terminal.cpp
-cppSRCS_$(d) += servos.cpp
+#cppSRCS_$(d) += servos.cpp
 cppSRCS_$(d) += function.cpp
+ifeq ($(ENABLE_DXL),yes)
 cppSRCS_$(d) += dxl.cpp
+endif
 cppSRCS_$(d) += main.cpp
 cppSRCS_$(d) += flash_write.cpp
 cppSRCS_$(d) += watchdog.cpp
 
 ifeq ($(ENABLE_COMMANDS),yes)
 cppSRCS_$(d) += commands.cpp
+ifeq ($(ENABLE_DXL), yes)
 cppSRCS_$(d) += dxl_commands.cpp
+endif
 endif
 
 cppFILES_$(d) := $(cppSRCS_$(d):%=$(d)/%)
