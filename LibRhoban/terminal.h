@@ -204,11 +204,13 @@ void terminal_register(const struct terminal_command *command);
         terminal_io()->println( name ); \
     }
 
+float terminal_atof(char *str);
+
 #define TERMINAL_PARAMETER_FLOAT(name, description, startValue) \
-    TERMINAL_PARAMETER(name, description, startValue, float, atof)
+    TERMINAL_PARAMETER(name, description, startValue, float, terminal_atof)
 
 #define TERMINAL_PARAMETER_DOUBLE(name, description, startValue) \
-    TERMINAL_PARAMETER(name, description, startValue, double, atof)
+    TERMINAL_PARAMETER(name, description, startValue, double, terminal_atof)
 
 #define TERMINAL_PARAMETER_INT(name, description, startValue) \
     TERMINAL_PARAMETER(name, description, startValue, int, atoi)

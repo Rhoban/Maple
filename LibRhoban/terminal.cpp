@@ -486,3 +486,24 @@ void terminal_silent(bool silent)
 {
     terminalIO.silent = silent;
 }
+
+float terminal_atof(char *str)
+{
+    float f = atoi(str);
+    char *savePtr;
+    strtok_r(str, ".", &savePtr);
+    char *floatPart = strtok_r(NULL, ".", &savePtr);
+    if (floatPart != NULL) {
+        float divide = 1;
+        for (char *tmp=floatPart; *tmp!='\0'; tmp++) {
+            divide *= 10; 
+        }   
+        if (f > 0) {
+            f += atoi(floatPart)/divide;
+        } else {
+            f -= atoi(floatPart)/divide;
+        }   
+    }
+
+    return f;
+}
