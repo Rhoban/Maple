@@ -5,7 +5,7 @@ d               := $(dir)
 BUILDDIRS       += $(BUILD_PATH)/$(d)
 
 ifndef $(ENABLE_DXL)
-ENABLE_DXL := yes
+ENABLE_DXL := no
 endif
 
 # Safe includes for Wirish.
