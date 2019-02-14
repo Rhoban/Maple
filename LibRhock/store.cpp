@@ -5,10 +5,10 @@
 #include <rhock/obj.h>
 #include <rhock/store.h>
 #include <flash_write.h>
+#include "rhock.h"
 
 #define PAGE_SIZE   1024
-#define PAGES       10
-#define FLASH_SIZE  (PAGES*PAGE_SIZE)
+#define FLASH_SIZE  (RHOCK_PAGES*PAGE_SIZE)
 
 // Allocate the appropriate zone in the flash
 const char rhock_progs[FLASH_SIZE] 
@@ -21,7 +21,7 @@ const uint32_t rhock_store_page_size()
 
 const uint32_t rhock_store_pages()
 {
-    return PAGES;
+    return RHOCK_PAGES;
 }
 
 const uint8_t *rhock_store_page_get(uint32_t n)

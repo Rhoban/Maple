@@ -5,15 +5,19 @@
 #include <rhock/program.h>
 #include <rhock/vm.h>
 #include <rhock/native.h>
+#include "rhock.h"
 #include <terminal.h>
 
 TERMINAL_COMMAND(ps, "Process list")
 {
-    rhock_memory_addr addr = rhock_vm_get_objs();
+    struct rhock_obj **objs = rhock_get_programs();
+
     int i=0;
-    while (addr != RHOCK_LAST) {
+    while (*objs != NULL) {
         i++;
-        struct rhock_obj *obj = rhock_get_obj(addr);
+        struct rhock_obj *obj = *objs;
+        objs++;
+
         terminal_io()->print(i);
         terminal_io()->print("] ");
         // XXX: Todo handle better these 16 chars!
@@ -36,7 +40,6 @@ TERMINAL_COMMAND(ps, "Process list")
             terminal_io()->print("not loaded");
         }
         terminal_io()->println();
-        addr = rhock_chain_next(addr);
     }
 }
 

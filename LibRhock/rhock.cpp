@@ -3,7 +3,10 @@
 #include <terminal.h>
 #include <rhock/stream.h>
 #include <rhock/vm.h>
+#include <rhock/memory.h>
+#include <rhock/obj.h>
 #include <rhock/program.h>
+#include <rhock/chain.h>
 #include "rhock.h"
 
 const char rhock_exit[] = "!rhock\r";
@@ -58,3 +61,21 @@ void rhock_killall()
 {
     rhock_program_killall();
 }
+
+static struct rhock_obj *objects[RHOCK_PAGES+1];
+
+struct rhock_obj **rhock_get_programs()
+{
+    struct rhock_obj **obj = &objects[RHOCK_PAGES];
+    *obj = NULL;
+
+    rhock_memory_addr addr = rhock_vm_get_objs();
+    while (addr != RHOCK_LAST) {
+        obj--;
+        *obj = rhock_get_obj(addr);
+        addr = rhock_chain_next(addr);
+    }
+
+    return obj;
+}
+
