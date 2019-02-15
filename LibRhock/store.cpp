@@ -61,7 +61,7 @@ TERMINAL_COMMAND(store, "Shows the store status")
                 terminal_io()->println("BAD CHECKSUM");
             }
 
-            for (int i=0; i<100; i++) {
+            for (int i=0; i<1024; i++) {
                 terminal_io()->print((int)(*(rhock_store_page_get(k)+i)));
                 terminal_io()->print(" ");
             }
