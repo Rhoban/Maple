@@ -489,6 +489,7 @@ void terminal_silent(bool silent)
 
 float terminal_atof(char *str)
 {
+    int sign = (str[0]=='-') ? -1 : 1;
     float f = atoi(str);
     char *savePtr;
     strtok_r(str, ".", &savePtr);
@@ -498,11 +499,7 @@ float terminal_atof(char *str)
         for (char *tmp=floatPart; *tmp!='\0'; tmp++) {
             divide *= 10; 
         }   
-        if (f > 0) {
-            f += atoi(floatPart)/divide;
-        } else {
-            f -= atoi(floatPart)/divide;
-        }   
+        f += sign*atoi(floatPart)/divide;
     }
 
     return f;
