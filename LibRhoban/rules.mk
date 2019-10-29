@@ -19,9 +19,9 @@ CFLAGS_$(d) = $(LIBMAPLE_INCLUDES) $(WIRISH_INCLUDES) $(LIBROBOT_INCLUDES) -Wall
 
 # Local rules and targets
 cppSRCS_$(d) := terminal.cpp
-#cppSRCS_$(d) += servos.cpp
 cppSRCS_$(d) += function.cpp
 ifeq ($(ENABLE_DXL),yes)
+cppSRCS_$(d) += servos.cpp
 cppSRCS_$(d) += dxl.cpp
 endif
 cppSRCS_$(d) += main.cpp
