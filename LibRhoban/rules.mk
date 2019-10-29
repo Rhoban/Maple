@@ -4,7 +4,10 @@ dirstack_$(sp)  := $(d)
 d               := $(dir)
 BUILDDIRS       += $(BUILD_PATH)/$(d)
 
-ifndef $(ENABLE_DXL)
+debug:
+	echo " $(ENABLE_DXL) DEBUG!"
+
+ifndef ENABLE_DXL
 ENABLE_DXL := no
 endif
 
