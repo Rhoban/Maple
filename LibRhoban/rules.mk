@@ -8,6 +8,10 @@ ifndef ENABLE_DXL
 ENABLE_DXL := no
 endif
 
+ifndef ENABLE_LEWAN
+ENABLE_LEWAN := no
+endif
+
 # Safe includes for Wirish.
 WIRISH_INCLUDES := -I$(LIB_MAPLE_HOME)/wirish/include -I$(LIB_MAPLE_HOME)/wirish/$(WIRISH_BOARD_PATH)/include
 
@@ -23,6 +27,9 @@ cppSRCS_$(d) += function.cpp
 ifeq ($(ENABLE_DXL),yes)
 cppSRCS_$(d) += servos.cpp
 cppSRCS_$(d) += dxl.cpp
+endif
+ifeq ($(ENABLE_LEWAN),yes)
+cppSRCS_$(d) += lewan.cpp
 endif
 cppSRCS_$(d) += main.cpp
 cppSRCS_$(d) += flash_write.cpp
