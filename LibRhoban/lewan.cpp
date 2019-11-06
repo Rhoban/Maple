@@ -6,6 +6,7 @@
 #include "lewan.h"
 
 #define SERVO_MOVE_TIME_WRITE   1
+#define SERVO_LED_CTRL_WRITE    33
 
 void lewan_init()
 {
@@ -56,11 +57,31 @@ void lewan_set_pos(uint8_t id, uint16_t angle, uint16_t duration)
     lewan_send_packet(id, SERVO_MOVE_TIME_WRITE, payload, sizeof(payload));
 }
 
+void lewan_set_led(uint8_t id, uint8_t on)
+{
+    lewan_send_packet(id, SERVO_LED_CTRL_WRITE, &on, 1);
+}
+
 TERMINAL_COMMAND(lw_angle, "Set an angle")
 {
     if (argc != 2) {
         terminal_io()->println("Usage: lw_angle [id] [angle:0-1000]");
     } else {
         lewan_set_pos(atoi(argv[0]), atoi(argv[1]), 0);
+    }
+}
+
+TERMINAL_COMMAND(lw_blink, "Identify servo")
+{
+    if (argc != 1) {
+        terminal_io()->println("Usage: ld_blink [id]");
+    } else {
+        uint8_t id = atoi(argv[0]);
+        while (!SerialUSB.available()) {
+            lewan_set_led(id, 1);
+            delay(300);
+            lewan_set_led(id, 0);
+            delay(300);
+        }
     }
 }
