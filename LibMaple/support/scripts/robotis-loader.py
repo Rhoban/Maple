@@ -1,8 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # This script sends a program on a robotis board (OpenCM9.04 or CM900)
-# using the robotis bootloader (used in OpenCM IDE)
-# 
+# using the robotis bootloader (used in OpenCM IDE) 
 # Usage:
 # python robotis-loader.py <serial port> <binary>
 #
@@ -25,7 +24,7 @@ pgm, port, binary = sys.argv
 def progressBar(percent, precision=65):
     threshold=precision*percent/100.0
     sys.stdout.write('[ ')
-    for x in xrange(0, precision):
+    for x in range(0, precision):
         if x < threshold: sys.stdout.write('#')
         else: sys.stdout.write(' ')
     sys.stdout.write(' ] ')
@@ -35,7 +34,7 @@ def progressBar(percent, precision=65):
 try:
     stat = os.stat(binary)
     size = stat.st_size
-    firmware = file(binary, 'rb')
+    firmware = open(binary, 'rb')
     print('* Opening %s, size=%d' % (binary, size))
 except:
     exit('! Unable to open file %s' % binary)
@@ -51,19 +50,19 @@ s.setRTS(True)
 s.setDTR(False)
 time.sleep(0.1)
 s.setRTS(False)
-s.write('CM9X')
+s.write('CM9X'.encode())
 s.close()
 time.sleep(1.0);
 
 print('* Connecting...')
 s = serial.Serial(port, baudrate=115200)
-s.write('AT&LD')
+s.write('AT&LD'.encode())
 print('* Download signal transmitted, waiting...')
 
 # Entering bootloader sequence
 while True:
     line = s.readline().strip()
-    if line.endswith('Ready..'):
+    if line.endswith('Ready..'.encode()):
         print('* Board ready, sending data')
         cs = 0
         pos = 0
@@ -75,19 +74,19 @@ while True:
                 progressBar(100*float(pos)/float(size))
                 s.write(c)
                 for k in range(0,len(c)):
-                    cs = (cs+ord(c[k]))%256
+                    cs = (cs+ord(chr(c[k])))%256
             else:
                 break
         print('')
         s.setDTR(True)
         print('* Checksum: %d' % (cs))
-        s.write(chr(cs))
+        s.write(bytes([cs]))
         print('* Firmware was sent')
     else:
-        if line == 'Success..':
+        if line == 'Success..'.encode():
             print('* Success, running the code')
             print('')
-            s.write('AT&RST')
+            s.write('AT&RST'.encode())
             s.close()
             exit()
         else:
